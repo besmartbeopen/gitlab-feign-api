@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group = 'it.besmartbeopen.gitlab'
+version = '1.0-SNAPSHOT'
+
+repositories {
+  mavenLocal()
+  jcenter()
+}
+
+dependencies {
+  compileOnly("org.projectlombok:lombok:1.16.12")
+
+  testCompileOnly("org.projectlombok:lombok:1.16.12")
+
+  compile("io.github.openfeign:feign-core:9.4.0")
+  compile("io.github.openfeign.form:feign-form:2.0.6")
+  compile("com.google.guava:guava:20.0")
+
+  testCompile("org.testng:testng:6.9.13.6")
+  testCompile("io.github.openfeign:feign-jackson:9.4.0")
+  testCompile("io.github.openfeign:feign-okhttp:9.4.0")
+  // com.squareup.okhttp3 -> logging-interceptor latest.integration
+}
+
+test {
+  useTestNG()
+}
