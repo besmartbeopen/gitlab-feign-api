@@ -16,11 +16,11 @@ repositories {
 dependencies {
   compileOnly("org.projectlombok:lombok:1.16.12")
 
-  testCompileOnly("org.projectlombok:lombok:1.16.12")
+  testCompileOnly("org.projectlombok:lombok:1.16.14")
 
   compile("io.github.openfeign:feign-core:9.4.0")
   compile("io.github.openfeign.form:feign-form:2.0.6")
-  compile("com.google.guava:guava:20.0")
+  compile("com.google.guava:guava:21.0")
 
   testCompile("org.testng:testng:6.9.13.6")
   testCompile("io.github.openfeign:feign-jackson:9.4.0")
