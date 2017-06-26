@@ -18,16 +18,16 @@ public class UploadMultipartEncodedDataProcessor
   private static final String CRLF = "\r\n";
 
   @Override
-  protected boolean isFile(Object value) {
-    return super.isFile(value) || value instanceof UploadFile;
+  protected boolean isPayload(Object value) {
+    return super.isPayload(value) || value instanceof UploadFile;
   }
 
   @Override
-  protected void writeFile(OutputStream output, PrintWriter writer, String name,
+  protected void writeByteOrFile(OutputStream output, PrintWriter writer, String name,
       Object value) {
 
     if (value instanceof UploadFile) {
-      writeFileMeta(writer, name, ((UploadFile) value).getName());
+      writeFileMeta(writer, name, ((UploadFile) value).getName(), null);
 
       // writeFile:
       try {
@@ -37,7 +37,7 @@ public class UploadMultipartEncodedDataProcessor
         throw new RuntimeException(e);
       }
     } else {
-      super.writeFile(output, writer, name, value);
+      super.writeByteOrFile(output, writer, name, value);
     }
   }
 
@@ -48,13 +48,15 @@ public class UploadMultipartEncodedDataProcessor
    * @param name
    * @param fileName
    */
-  protected void writeFileMeta(PrintWriter writer, String name, String fileName) {
+  protected void writeFileMeta(PrintWriter writer, String name, String fileName,
+      String contentValue) {
+
     String contentDesposition =
         "Content-Disposition: form-data; name=\"" + name + "\"; " + "filename=\"" + fileName + "\"";
 
-    String contentValue = URLConnection.guessContentTypeFromName(fileName);
     if (contentValue == null) {
-      contentValue = "application/octet-stream";
+      contentValue = (fileName != null) ? URLConnection.guessContentTypeFromName(fileName)
+          : "application/octet-stream";
     }
 
     String contentType = "Content-Type: " + contentValue;
