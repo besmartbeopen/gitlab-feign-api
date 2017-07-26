@@ -17,7 +17,7 @@ import com.google.common.cache.LoadingCache;
 /**
  * @author marco
  *
- * @param <E>
+ * @param <E> paginated type
  */
 public class PaginatedList<E> implements List<E>, Serializable {
 

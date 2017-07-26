@@ -14,6 +14,9 @@ public class UploadFormEncoder implements Encoder {
   private final Encoder delegate;
   protected final FormDataProcessor processor;
 
+  /**
+   * @param delegate
+   */
   public UploadFormEncoder(Encoder delegate) {
     this.delegate = delegate;
     this.processor = new UploadMultipartEncodedDataProcessor();

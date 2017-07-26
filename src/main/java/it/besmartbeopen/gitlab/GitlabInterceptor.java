@@ -5,8 +5,6 @@ import feign.RequestTemplate;
 
 /**
  * @author marco
- *
- * @param <T>
  */
 public class GitlabInterceptor implements RequestInterceptor {
 
@@ -14,6 +12,9 @@ public class GitlabInterceptor implements RequestInterceptor {
 
   private final String token;
 
+  /**
+   * @param token
+   */
   public GitlabInterceptor(String token) {
     this.token = token;
   }

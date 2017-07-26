@@ -1,17 +1,15 @@
 buildscript {
   repositories {
-        jcenter()
-   }
+    jcenter()
+  }
 }
 
 plugins {
     id "com.jfrog.bintray" version "1.7.3"
 }
 
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.8
@@ -22,12 +20,12 @@ version = '0.1.1'
 
 bintray {
   // user/key from gradle.properties
-  publications = ['MyPublication']
+  publications = ['maven']
   dryRun = false
   publish = true
   pkg {
     repo = 'maven'
-    name = 'gitlab-feign-api'
+    name = 'gitlab-api'
     licenses = ['Apache-2.0']
     issueTrackerUrl = 'https://github.com/besmartbeopen/gitlab-feign-api/issues'
     vcsUrl = 'https://github.com/besmartbeopen/gitlab-feign-api.git'
@@ -50,27 +48,49 @@ bintray {
 }
 
 repositories {
-  mavenLocal()
   jcenter()
 }
 
+configurations {
+  optional
+  api.extendsFrom optional
+}
+
 dependencies {
-  compileOnly("org.projectlombok:lombok:1.16.16")
+  compileOnly "org.projectlombok:lombok:1.16.18"
 
-  testCompileOnly("org.projectlombok:lombok:1.16.16")
+  testCompileOnly "org.projectlombok:lombok:1.16.18"
 
-  compile("io.github.openfeign:feign-core:9.5.0")
-  compile("io.github.openfeign.form:feign-form:2.1.0")
-  compile("com.google.guava:guava:22.0")
+  api "io.github.openfeign:feign-core:9.5.0"
+  api "io.github.openfeign.form:feign-form:2.2.0"
+  implementation "com.google.guava:guava:22.0"
+  optional "io.github.openfeign:feign-jackson:9.5.0"
+  optional "io.github.openfeign:feign-okhttp:9.5.0"
+  optional "com.google.inject:guice:4.1.0"
 
-  testCompile("org.testng:testng:6.9.13.6")
-  testCompile("io.github.openfeign:feign-jackson:9.5.0")
-  testCompile("io.github.openfeign:feign-okhttp:9.5.0")
+  testImplementation "org.testng:testng:6.9.13.6"
+  testImplementation "io.github.openfeign:feign-jackson:9.5.0"
+  testImplementation "io.github.openfeign:feign-okhttp:9.5.0"
   // com.squareup.okhttp3 -> logging-interceptor latest.integration
 }
 
 test {
   useTestNG()
+}
+
+task sourceJar(type: Jar) {
+  classifier = 'sources'
+  from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+  from javadoc.destinationDir
+}
+
+artifacts {
+  archives sourceJar
+  archives javadocJar
 }
 
 def pomConfig = {
@@ -96,11 +116,12 @@ def pomConfig = {
 
 publishing {
   publications {
-    MyPublication(MavenPublication) {
-      from components.java
+    maven(MavenPublication) {
       groupId 'it.besmartbeopen'
       artifactId 'gitlab-feign-api'
       version '0.1.1'
+      artifact sourceJar
+      artifact javadocJar
       pom.withXml {
         def root = asNode()
         root.appendNode('description', 'Gitlab REST api client via openfeign')
@@ -108,6 +129,7 @@ publishing {
         root.appendNode('url', 'https://github.com/besmartbeopen/gitlab-feign-api')
         root.children().last() + pomConfig
       }
+      from components.java
     }
   }
 }

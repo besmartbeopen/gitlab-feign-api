@@ -43,10 +43,10 @@ public class UploadMultipartEncodedDataProcessor
 
   /**
    * Argh! feign.form MultipartEncodedDataProcessor#writeFileMeta is private
-   *
    * @param writer
    * @param name
    * @param fileName
+   * @param contentValue
    */
   protected void writeFileMeta(PrintWriter writer, String name, String fileName,
       String contentValue) {
